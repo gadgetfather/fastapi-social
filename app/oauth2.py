@@ -6,15 +6,15 @@ from app.database import get_db
 from . import schemas
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-
+from .config import settings
 # Secret key to sign the JWT token
 #Algorithm used to sign the JWT token
 #Expiration time of the JWT token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
-SECRET_KEY = "d1e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -44,4 +44,5 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    print("11111",token)
     return verify_token(token,credentials_exception)
